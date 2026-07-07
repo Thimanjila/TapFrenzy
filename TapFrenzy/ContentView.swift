@@ -22,6 +22,10 @@ struct ContentView: View {
     // Moving Target
     @State private var buttonOffset: CGSize = .zero
 
+    // Shrinking Button
+    private let startScale: CGFloat = 1.0
+    private let minScale: CGFloat = 0.4
+
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     let trapColourTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
     let movingTargetTimer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
@@ -53,6 +57,7 @@ struct ContentView: View {
             .frame(width: 150, height: 150)
             .background(isBonusColour ? Color.green : Color.gray)
             .clipShape(Circle())
+            .scaleEffect(shrinkScale)
             .offset(buttonOffset)
 
             Spacer()
@@ -97,7 +102,13 @@ struct ContentView: View {
         }
     }
 
-    //  Logic
+    // Derived state
+    private var shrinkScale: CGFloat {
+        let progress = timeRemaining / 10.0
+        return minScale + (startScale - minScale) * progress
+    }
+
+    // Logic
     private func handleTap() {
         let now = Date()
         if let last = lastTapDate, now.timeIntervalSince(last) <= 0.5 {
