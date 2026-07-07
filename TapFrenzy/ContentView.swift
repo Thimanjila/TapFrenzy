@@ -26,6 +26,10 @@ struct ContentView: View {
     private let startScale: CGFloat = 1.0
     private let minScale: CGFloat = 0.4
 
+    // Bonus Burst
+    @State private var bonusBurstActive: Bool = false
+    @State private var bonusBurstUsed: Bool = false
+
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     let trapColourTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
     let movingTargetTimer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
@@ -37,7 +41,7 @@ struct ContentView: View {
             gameOverView
         }
     }
-
+//Game Screen
     private var gameView: some View {
         VStack(spacing: 24) {
             Text("Tap Frenzy").font(.largeTitle.bold())
@@ -48,6 +52,12 @@ struct ContentView: View {
             Text(String(format: "%.1fs", timeRemaining))
                 .font(.title2.monospacedDigit())
                 .foregroundColor(.gray)
+
+            if bonusBurstActive {
+                Text(" DOUBLE POINTS! ")
+                    .font(.headline)
+                    .foregroundColor(.orange)
+            }
 
             Spacer()
 
@@ -66,6 +76,9 @@ struct ContentView: View {
             guard gameActive else { return }
             if timeRemaining > 0 {
                 timeRemaining -= 0.1
+                if !bonusBurstUsed && !bonusBurstActive && timeRemaining < 7 && timeRemaining > 2 && Int(timeRemaining * 10) % 15 == 0 {
+                    triggerBonusBurst()
+                }
             } else {
                 endGame()
             }
@@ -84,7 +97,7 @@ struct ContentView: View {
             }
         }
     }
-
+// Game Over Screen
     private var gameOverView: some View {
         VStack(spacing: 20) {
             Text("Game Over").font(.largeTitle.bold())
@@ -122,7 +135,18 @@ struct ContentView: View {
         if points > 0 {
             points *= comboMultiplier
         }
+        if bonusBurstActive {
+            points *= 2
+        }
         score = max(0, score + points)
+    }
+
+    private func triggerBonusBurst() {
+        bonusBurstActive = true
+        bonusBurstUsed = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            bonusBurstActive = false
+        }
     }
 
     private func endGame() {
@@ -136,6 +160,8 @@ struct ContentView: View {
         lastTapDate = nil
         isBonusColour = true
         buttonOffset = .zero
+        bonusBurstActive = false
+        bonusBurstUsed = false
         gameActive = true
     }
 }
