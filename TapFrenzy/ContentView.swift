@@ -16,7 +16,11 @@ struct ContentView: View {
     @State private var comboMultiplier: Int = 1
     @State private var lastTapDate: Date? = nil
 
+    // Trap Colour
+    @State private var isBonusColour: Bool = true
+
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    let trapColourTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
 
     var body: some View {
         if gameActive {
@@ -25,7 +29,7 @@ struct ContentView: View {
             gameOverView
         }
     }
-// Game View
+
     private var gameView: some View {
         VStack(spacing: 24) {
             Text("Tap Frenzy").font(.largeTitle.bold())
@@ -41,7 +45,7 @@ struct ContentView: View {
                 handleTap()
             }
             .frame(width: 150, height: 150)
-            .background(Color.green)
+            .background(isBonusColour ? Color.green : Color.gray)
             .clipShape(Circle())
         }
         .onReceive(timer) { _ in
@@ -52,8 +56,12 @@ struct ContentView: View {
                 endGame()
             }
         }
+        .onReceive(trapColourTimer) { _ in
+            guard gameActive else { return }
+            isBonusColour.toggle()
+        }
     }
-//Game Over view
+
     private var gameOverView: some View {
         VStack(spacing: 20) {
             Text("Game Over").font(.largeTitle.bold())
@@ -80,7 +88,12 @@ struct ContentView: View {
             comboMultiplier = 1
         }
         lastTapDate = now
-        score += 1 * comboMultiplier
+
+        var points = isBonusColour ? 1 : -1
+        if points > 0 {
+            points *= comboMultiplier
+        }
+        score = max(0, score + points)
     }
 
     private func endGame() {
@@ -92,6 +105,7 @@ struct ContentView: View {
         timeRemaining = 10.0
         comboMultiplier = 1
         lastTapDate = nil
+        isBonusColour = true
         gameActive = true
     }
 }
