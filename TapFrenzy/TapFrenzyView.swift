@@ -166,5 +166,5 @@ struct TapFrenzyView: View {
     }
 }
 #Preview {
-    ContentView()
+    TapFrenzyView()
 }
