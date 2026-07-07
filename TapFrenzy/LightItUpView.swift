@@ -10,6 +10,8 @@ import SwiftUI
 struct LightItUpView: View {
     @State private var cards: [Card] = (0..<9).map { Card(id: $0) }
 
+    let lightTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
+
     let columns = [
         GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())
     ]
@@ -28,6 +30,18 @@ struct LightItUpView: View {
                 }
             }
             .padding()
+        }
+        .onReceive(lightTimer) { _ in
+            lightRandomCard()
+        }
+    }
+
+    private func lightRandomCard() {
+        withAnimation {
+            for i in cards.indices { cards[i].isLit = false }
+            if let randomIndex = cards.indices.randomElement() {
+                cards[randomIndex].isLit = true
+            }
         }
     }
 }
