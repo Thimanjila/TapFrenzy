@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct TapFrenzyView: View {
     @State private var score: Int = 0
     @State private var timeRemaining: Double = 10.0
     @State private var gameActive: Bool = false
