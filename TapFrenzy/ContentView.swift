@@ -12,6 +12,10 @@ struct ContentView: View {
     @State private var timeRemaining: Double = 10.0
     @State private var gameActive: Bool = false
 
+    // Combo System
+    @State private var comboMultiplier: Int = 1
+    @State private var lastTapDate: Date? = nil
+
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -21,18 +25,20 @@ struct ContentView: View {
             gameOverView
         }
     }
-
-    //  Game Screen
+// Game View
     private var gameView: some View {
         VStack(spacing: 24) {
             Text("Tap Frenzy").font(.largeTitle.bold())
             Text("Score: \(score)").font(.title.bold())
+            Text("Combo x\(comboMultiplier)")
+                .font(.headline)
+                .foregroundColor(.yellow)
             Text(String(format: "%.1fs", timeRemaining))
                 .font(.title2.monospacedDigit())
                 .foregroundColor(.gray)
 
             Button("TAP") {
-                score += 1
+                handleTap()
             }
             .frame(width: 150, height: 150)
             .background(Color.green)
@@ -47,8 +53,7 @@ struct ContentView: View {
             }
         }
     }
-
-    // Game Over Screen
+//Game Over view
     private var gameOverView: some View {
         VStack(spacing: 20) {
             Text("Game Over").font(.largeTitle.bold())
@@ -66,7 +71,18 @@ struct ContentView: View {
         }
     }
 
-    //Logic
+    // Logic
+    private func handleTap() {
+        let now = Date()
+        if let last = lastTapDate, now.timeIntervalSince(last) <= 0.5 {
+            comboMultiplier += 1
+        } else {
+            comboMultiplier = 1
+        }
+        lastTapDate = now
+        score += 1 * comboMultiplier
+    }
+
     private func endGame() {
         gameActive = false
     }
@@ -74,10 +90,11 @@ struct ContentView: View {
     private func resetGame() {
         score = 0
         timeRemaining = 10.0
+        comboMultiplier = 1
+        lastTapDate = nil
         gameActive = true
     }
 }
-
 #Preview {
     ContentView()
 }
