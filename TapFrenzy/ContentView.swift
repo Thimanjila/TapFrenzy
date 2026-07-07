@@ -19,8 +19,12 @@ struct ContentView: View {
     // Trap Colour
     @State private var isBonusColour: Bool = true
 
+    // Moving Target
+    @State private var buttonOffset: CGSize = .zero
+
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     let trapColourTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
+    let movingTargetTimer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
 
     var body: some View {
         if gameActive {
@@ -41,12 +45,17 @@ struct ContentView: View {
                 .font(.title2.monospacedDigit())
                 .foregroundColor(.gray)
 
+            Spacer()
+
             Button("TAP") {
                 handleTap()
             }
             .frame(width: 150, height: 150)
             .background(isBonusColour ? Color.green : Color.gray)
             .clipShape(Circle())
+            .offset(buttonOffset)
+
+            Spacer()
         }
         .onReceive(timer) { _ in
             guard gameActive else { return }
@@ -59,6 +68,15 @@ struct ContentView: View {
         .onReceive(trapColourTimer) { _ in
             guard gameActive else { return }
             isBonusColour.toggle()
+        }
+        .onReceive(movingTargetTimer) { _ in
+            guard gameActive else { return }
+            withAnimation(.spring()) {
+                buttonOffset = CGSize(
+                    width: CGFloat.random(in: -100...100),
+                    height: CGFloat.random(in: -150...150)
+                )
+            }
         }
     }
 
@@ -79,7 +97,7 @@ struct ContentView: View {
         }
     }
 
-    // Logic
+    //  Logic
     private func handleTap() {
         let now = Date()
         if let last = lastTapDate, now.timeIntervalSince(last) <= 0.5 {
@@ -106,6 +124,7 @@ struct ContentView: View {
         comboMultiplier = 1
         lastTapDate = nil
         isBonusColour = true
+        buttonOffset = .zero
         gameActive = true
     }
 }
