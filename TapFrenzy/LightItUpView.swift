@@ -48,6 +48,7 @@ struct LightItUpView: View {
     @State private var timeRemaining: Double = 60.0
     @State private var gameActive: Bool = false
     @State private var currentLevel: GameLevel = .l1
+    @AppStorage("lightItUpHighScore") private var highScore: Int = 0
 
     let roundTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     @State private var lightTimerCancellable: Timer? = nil
@@ -76,6 +77,15 @@ struct LightItUpView: View {
             } else {
                 Text("Light It Up").font(.largeTitle.bold())
                 Text("Final Score: \(score)").font(.title)
+
+                if score >= highScore && score > 0 {
+                    Text(" New High Score!")
+                        .foregroundColor(.yellow)
+                        .font(.headline)
+                } else {
+                    Text("High Score: \(highScore)")
+                        .foregroundColor(.gray)
+                }
 
                 Button("Start") {
                     startGame()
@@ -164,6 +174,9 @@ struct LightItUpView: View {
     private func endGame() {
         gameActive = false
         lightTimerCancellable?.invalidate()
+        if score > highScore {
+                highScore = score
+            }
     }
 }
 #Preview {
