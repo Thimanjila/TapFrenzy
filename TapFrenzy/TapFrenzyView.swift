@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TapFrenzyView: View {
     @State private var score: Int = 0
+    @AppStorage("tapFrenzyHighScore") private var highScore: Int = 0
     @State private var timeRemaining: Double = 10.0
     @State private var gameActive: Bool = false
 
@@ -29,6 +30,7 @@ struct TapFrenzyView: View {
     // Bonus Burst
     @State private var bonusBurstActive: Bool = false
     @State private var bonusBurstUsed: Bool = false
+    
 
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     let trapColourTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
@@ -102,6 +104,15 @@ struct TapFrenzyView: View {
         VStack(spacing: 20) {
             Text("Game Over").font(.largeTitle.bold())
             Text("Final Score: \(score)").font(.title)
+            
+            if score >= highScore && score > 0 {
+                       Text(" New High Score!")
+                           .foregroundColor(.yellow)
+                           .font(.headline)
+                   } else {
+                       Text("High Score: \(highScore)")
+                           .foregroundColor(.gray)
+                   }
 
             Button("Play Again") {
                 resetGame()
@@ -151,6 +162,9 @@ struct TapFrenzyView: View {
 
     private func endGame() {
         gameActive = false
+        if score > highScore {
+               highScore = score
+           }
     }
 
     private func resetGame() {
