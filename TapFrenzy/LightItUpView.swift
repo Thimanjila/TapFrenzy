@@ -40,6 +40,15 @@ enum GameLevel: CaseIterable {
         case .l4: return 3
         }
     }
+
+    var glowColour: Color {
+        switch self {
+        case .l1: return .green
+        case .l2: return .blue
+        case .l3: return .yellow
+        case .l4: return .red
+        }
+    }
 }
 
 struct LightItUpView: View {
@@ -65,13 +74,13 @@ struct LightItUpView: View {
                 LazyVGrid(columns: gridColumns, spacing: 16) {
                     ForEach(cards) { card in
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(card.isLit ? Color.yellow : Color.gray.opacity(0.3))
+                            .fill(card.isLit ? currentLevel.glowColour : Color.gray.opacity(0.3))
                             .frame(height: 80)
                             .scaleEffect(card.isLit ? 1.05 : 1.0)
-                            .onTapGesture {
-                                handleTap(on: card)
-                            }
-                    }
+                            .shadow(color: card.isLit ? currentLevel.glowColour.opacity(0.6) : .clear, radius: 10)
+                                        .onTapGesture {
+                                            handleTap(on: card)
+                                        }                    }
                 }
                 .padding()
             } else {
