@@ -5,6 +5,13 @@
 //  Created by Thimanjila Udangawe on 2026-07-07.
 //
 
+//
+//  LightItUpView.swift
+//  TapFrenzy
+//
+//  Created by Thimanjila Udangawe on 2026-07-07.
+//
+
 import SwiftUI
 
 enum GameLevel: CaseIterable {
@@ -58,6 +65,7 @@ struct LightItUpView: View {
     @State private var gameActive: Bool = false
     @State private var currentLevel: GameLevel = .l1
     @State private var showLevelUpFlash: Bool = false
+    @State private var lives: Int = 3
     @AppStorage("lightItUpHighScore") private var highScore: Int = 0
 
     let roundTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
@@ -72,6 +80,14 @@ struct LightItUpView: View {
                     Text(String(format: "%.1fs", timeRemaining))
                         .font(.title2.monospacedDigit())
                         .foregroundColor(.gray)
+
+                    HStack(spacing: 6) {
+                        ForEach(0..<3) { i in
+                            Image(systemName: i < lives ? "heart.fill" : "heart")
+                                .foregroundColor(.red)
+                        }
+                    }
+
                     LazyVGrid(columns: gridColumns, spacing: 16) {
                         ForEach(cards) { card in
                             RoundedRectangle(cornerRadius: 12)
@@ -88,6 +104,13 @@ struct LightItUpView: View {
                 } else {
                     Text("Light It Up").font(.largeTitle.bold())
                     Text("Final Score: \(score)").font(.title)
+
+                    if lives <= 0 {
+                        Text("Out of lives!")
+                            .foregroundColor(.red)
+                            .font(.subheadline)
+                    }
+
                     if score >= highScore && score > 0 {
                         Text(" New High Score!")
                             .foregroundColor(.yellow)
@@ -201,12 +224,16 @@ struct LightItUpView: View {
             score += 1
             withAnimation { cards[index].isLit = false }
         } else {
-            score = max(0, score - 1)
+            lives -= 1
+            if lives <= 0 {
+                endGame()
+            }
         }
     }
 
     private func startGame() {
         score = 0
+        lives = 3
         timeRemaining = 60.0
         currentLevel = .l1
         setupCards(count: currentLevel.cardCount)
@@ -218,10 +245,11 @@ struct LightItUpView: View {
         gameActive = false
         lightTimerCancellable?.invalidate()
         if score > highScore {
-                highScore = score
-            }
+            highScore = score
+        }
     }
 }
+
 #Preview {
     LightItUpView()
 }
