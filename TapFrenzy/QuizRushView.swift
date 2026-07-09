@@ -9,6 +9,7 @@ import SwiftUI
 
 struct QuizRushView: View {
     @StateObject private var viewModel = QuizViewModel()
+    @State private var shakeTrigger: CGFloat = 0
 
     var body: some View {
         VStack {
@@ -59,7 +60,7 @@ struct QuizRushView: View {
         }
     }
 
-    //Loaded (active question)
+    // Loaded (active question)
     private var questionView: some View {
         VStack(spacing: 20) {
             HStack {
@@ -82,7 +83,14 @@ struct QuizRushView: View {
 
                 ForEach(question.allAnswers, id: \.self) { answer in
                     Button(answer) {
-                        viewModel.submitAnswer(answer)
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            viewModel.submitAnswer(answer)
+                        }
+                        if viewModel.wasCorrect == false {
+                            withAnimation(.default) {
+                                shakeTrigger += 1
+                            }
+                        }
                     }
                     .font(.body.bold())
                     .foregroundColor(.white)
@@ -106,10 +114,16 @@ struct QuizRushView: View {
                 .cornerRadius(12)
             }
         }
+        .modifier(ShakeEffect(animatableData: shakeTrigger))
+        .background(
+            (viewModel.wasCorrect == true ? Color.green : viewModel.wasCorrect == false ? Color.red : Color.clear)
+                .opacity(0.15)
+                .animation(.easeInOut(duration: 0.2), value: viewModel.wasCorrect)
+        )
     }
 
     private func buttonColour(for answer: String) -> Color {
-        guard let selected = viewModel.selectedAnswer else { return .gray }
+        guard let selected = viewModel.selectedAnswer else { return .yellow }
         if answer == viewModel.currentQuestion?.correct_answer {
             return .green
         }
