@@ -34,6 +34,17 @@ struct HomeView: View {
                         .background(Color.blue)
                         .cornerRadius(12)
                 }
+                
+                
+                NavigationLink(destination: QuizRushView()) {
+                                    Text("Quiz Rush")
+                                        .font(.title2.bold())
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.orange)
+                                        .cornerRadius(12)
+                                }
                 NavigationLink(destination: SettingsView()) {
                     Text("Settings")
                         .font(.title2.bold())
