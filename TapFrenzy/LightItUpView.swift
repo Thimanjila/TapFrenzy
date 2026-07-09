@@ -67,7 +67,7 @@ struct LightItUpView: View {
     @State private var showLevelUpFlash: Bool = false
     @State private var lives: Int = 3
     @AppStorage("lightItUpHighScore") private var highScore: Int = 0
-
+    @AppStorage("roundLength") private var roundLength: Double = 60.0
     let roundTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     @State private var lightTimerCancellable: Timer? = nil
 
@@ -178,12 +178,13 @@ struct LightItUpView: View {
     }
 
     private func updateLevel() {
-        let elapsed = 60.0 - timeRemaining
+        let elapsed = roundLength - timeRemaining
+        let quarter = roundLength / 4.0
         let newLevel: GameLevel
         switch elapsed {
-        case 0..<15: newLevel = .l1
-        case 15..<30: newLevel = .l2
-        case 30..<45: newLevel = .l3
+        case 0..<quarter: newLevel = .l1
+        case quarter..<(quarter * 2): newLevel = .l2
+        case (quarter * 2)..<(quarter * 3): newLevel = .l3
         default: newLevel = .l4
         }
 
@@ -234,7 +235,7 @@ struct LightItUpView: View {
     private func startGame() {
         score = 0
         lives = 3
-        timeRemaining = 60.0
+        timeRemaining = roundLength
         currentLevel = .l1
         setupCards(count: currentLevel.cardCount)
         gameActive = true

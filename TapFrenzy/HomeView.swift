@@ -34,6 +34,15 @@ struct HomeView: View {
                         .background(Color.blue)
                         .cornerRadius(12)
                 }
+                NavigationLink(destination: SettingsView()) {
+                    Text("Settings")
+                        .font(.title2.bold())
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.gray)
+                        .cornerRadius(12)
+                }
             }
             .padding(40)
         }
