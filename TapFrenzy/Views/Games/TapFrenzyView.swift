@@ -31,7 +31,7 @@ struct TapFrenzyView: View {
     @State private var bonusBurstActive: Bool = false
     @State private var bonusBurstUsed: Bool = false
     
-
+    @EnvironmentObject var sessionStore: SessionStore
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     let trapColourTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
     let movingTargetTimer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
@@ -163,9 +163,11 @@ struct TapFrenzyView: View {
     private func endGame() {
         gameActive = false
         if score > highScore {
-               highScore = score
-           }
+            highScore = score
+        }
+        sessionStore.addSession(mode: .tapFrenzy, score: score)
     }
+    
 
     private func resetGame() {
         score = 0

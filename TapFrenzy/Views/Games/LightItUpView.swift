@@ -66,6 +66,7 @@ struct LightItUpView: View {
     @State private var currentLevel: GameLevel = .l1
     @State private var showLevelUpFlash: Bool = false
     @State private var lives: Int = 3
+    @EnvironmentObject var sessionStore: SessionStore
     @AppStorage("lightItUpHighScore") private var highScore: Int = 0
     @AppStorage("roundLength") private var roundLength: Double = 60.0
     let roundTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
@@ -248,6 +249,7 @@ struct LightItUpView: View {
         if score > highScore {
             highScore = score
         }
+        sessionStore.addSession(mode: .lightItUp, score: score)
     }
 }
 

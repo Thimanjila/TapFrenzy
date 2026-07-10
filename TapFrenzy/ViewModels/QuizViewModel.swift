@@ -25,6 +25,11 @@ class QuizViewModel: ObservableObject {
     @Published var wasCorrect: Bool? = nil
 
     private let service = TriviaService()
+        private var sessionStore: SessionStore?
+
+        func configure(sessionStore: SessionStore) {
+            self.sessionStore = sessionStore
+        }
 
     var currentQuestion: Question? {
         guard currentIndex < questions.count else { return nil }
@@ -69,6 +74,8 @@ class QuizViewModel: ObservableObject {
             currentIndex += 1
         } else {
             state = .finished
+            sessionStore?.addSession(mode: .quizRush, score: score)
+                    
         }
     }
 

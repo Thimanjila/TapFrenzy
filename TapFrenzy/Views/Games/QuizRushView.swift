@@ -10,7 +10,8 @@ import SwiftUI
 struct QuizRushView: View {
     @StateObject private var viewModel = QuizViewModel()
     @State private var shakeTrigger: CGFloat = 0
-
+    @EnvironmentObject var sessionStore: SessionStore
+    
     var body: some View {
         VStack {
             switch viewModel.state {
@@ -26,6 +27,7 @@ struct QuizRushView: View {
         }
         .padding()
         .task {
+            viewModel.configure(sessionStore: sessionStore)
             await viewModel.load()
         }
     }

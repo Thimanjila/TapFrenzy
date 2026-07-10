@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct TapFrenzyApp: App {
+    @StateObject private var sessionStore = SessionStore()
+
     var body: some Scene {
         WindowGroup {
-            HomeTab()
+            RootTabView()
+                .environmentObject(sessionStore)
         }
     }
 }

@@ -13,28 +13,26 @@ struct SettingsTab: View {
     let options: [Double] = [30, 60, 90]
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                Text("Round Length")
-                    .font(.title.bold())
+        VStack(spacing: 24) {
+            Text("Round Length")
+                .font(.title.bold())
 
-                Picker("Round Length", selection: $roundLength) {
-                    ForEach(options, id: \.self) { value in
-                        Text("\(Int(value))s").tag(value)
-                    }
+            Picker("Round Length", selection: $roundLength) {
+                ForEach(options, id: \.self) { value in
+                    Text("\(Int(value))s").tag(value)
                 }
-                .pickerStyle(.segmented)
-                .padding()
-
-                Text("Applies to Light It Up rounds.")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-
-                Spacer()
             }
+            .pickerStyle(.segmented)
             .padding()
-            .navigationTitle("Settings")
+
+            Text("Applies to Light It Up rounds.")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+
+            Spacer()
         }
+        .padding()
+        .navigationTitle("Settings")
     }
 }
 
