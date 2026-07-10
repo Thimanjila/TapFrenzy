@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SettingsView: View {
+struct SettingsTab: View {
     @AppStorage("roundLength") private var roundLength: Double = 60.0
 
     let options: [Double] = [30, 60, 90]
@@ -39,5 +39,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsTab()
 }

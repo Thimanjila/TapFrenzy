@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct HomeTab: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -45,7 +45,7 @@ struct HomeView: View {
                                         .background(Color.orange)
                                         .cornerRadius(12)
                                 }
-                NavigationLink(destination: SettingsView()) {
+                NavigationLink(destination: SettingsTab()) {
                     Text("Settings")
                         .font(.title2.bold())
                         .foregroundColor(.white)
@@ -61,5 +61,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeTab()
 }
