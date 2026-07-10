@@ -32,6 +32,8 @@ struct TapFrenzyView: View {
     @State private var bonusBurstUsed: Bool = false
     
     @EnvironmentObject var sessionStore: SessionStore
+    @EnvironmentObject var locationService: LocationService
+    
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     let trapColourTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
     let movingTargetTimer = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
@@ -165,7 +167,10 @@ struct TapFrenzyView: View {
         if score > highScore {
             highScore = score
         }
-        sessionStore.addSession(mode: .tapFrenzy, score: score)
+        sessionStore.addSession(mode: .tapFrenzy, score: score,
+                                latitude: locationService.currentLocation?.latitude ?? 0,
+                                    longitude: locationService.currentLocation?.longitude ?? 0
+        )
     }
     
 
@@ -179,6 +184,7 @@ struct TapFrenzyView: View {
         bonusBurstActive = false
         bonusBurstUsed = false
         gameActive = true
+        locationService.requestLocation()
     }
 }
 #Preview {

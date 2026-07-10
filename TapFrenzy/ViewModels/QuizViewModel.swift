@@ -26,10 +26,12 @@ class QuizViewModel: ObservableObject {
 
     private let service = TriviaService()
         private var sessionStore: SessionStore?
+        private var locationService: LocationService?
 
-        func configure(sessionStore: SessionStore) {
-            self.sessionStore = sessionStore
-        }
+    func configure(sessionStore: SessionStore, locationService: LocationService) {
+        self.sessionStore = sessionStore
+        self.locationService = locationService
+    }
 
     var currentQuestion: Question? {
         guard currentIndex < questions.count else { return nil }
@@ -74,8 +76,12 @@ class QuizViewModel: ObservableObject {
             currentIndex += 1
         } else {
             state = .finished
-            sessionStore?.addSession(mode: .quizRush, score: score)
-                    
+            sessionStore?.addSession(
+                mode: .quizRush,
+                score: score,
+                latitude: locationService?.currentLocation?.latitude ?? 0,
+                longitude: locationService?.currentLocation?.longitude ?? 0
+            )
         }
     }
 

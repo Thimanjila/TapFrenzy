@@ -11,6 +11,7 @@ struct QuizRushView: View {
     @StateObject private var viewModel = QuizViewModel()
     @State private var shakeTrigger: CGFloat = 0
     @EnvironmentObject var sessionStore: SessionStore
+    @EnvironmentObject var locationService: LocationService
     
     var body: some View {
         VStack {
@@ -27,10 +28,11 @@ struct QuizRushView: View {
         }
         .padding()
         .task {
-            viewModel.configure(sessionStore: sessionStore)
-            await viewModel.load()
+                viewModel.configure(sessionStore: sessionStore, locationService: locationService)
+                await viewModel.load()
+                locationService.requestLocation()
+            }
         }
-    }
 
     // Loading
     private var loadingView: some View {

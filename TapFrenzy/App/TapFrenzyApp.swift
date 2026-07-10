@@ -10,11 +10,16 @@ import SwiftUI
 @main
 struct TapFrenzyApp: App {
     @StateObject private var sessionStore = SessionStore()
+    @StateObject private var locationService = LocationService()
 
     var body: some Scene {
         WindowGroup {
             RootTabView()
                 .environmentObject(sessionStore)
+                .environmentObject(locationService)
+                .onAppear {
+                    locationService.requestPermission()
+                }
         }
     }
 }
