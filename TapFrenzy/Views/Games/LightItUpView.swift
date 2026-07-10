@@ -103,33 +103,13 @@ struct LightItUpView: View {
                         }
                     }
                     .padding()
-                } else {
-                    Text("Light It Up").font(.largeTitle.bold())
-                    Text("Final Score: \(score)").font(.title)
-
-                    if lives <= 0 {
-                        Text("Out of lives!")
-                            .foregroundColor(.red)
-                            .font(.subheadline)
-                    }
-
-                    if score >= highScore && score > 0 {
-                        Text(" New High Score!")
-                            .foregroundColor(.yellow)
-                            .font(.headline)
-                    } else {
-                        Text("High Score: \(highScore)")
-                            .foregroundColor(.gray)
-                    }
-                    Button("Start") {
-                        startGame()
-                    }
-                    .font(.title2.bold())
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(width: 200)
-                    .background(Color.blue)
-                    .cornerRadius(12)
+                }  else {
+                    ResultView(
+                        mode: .lightItUp,
+                        score: score,
+                        highScore: highScore,
+                        onPlayAgain: startGame
+                    )
                 }
             }
             if showLevelUpFlash {

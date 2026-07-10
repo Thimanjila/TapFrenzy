@@ -139,24 +139,13 @@ struct QuizRushView: View {
 
     // Finished
     private var finishedView: some View {
-        VStack(spacing: 20) {
-            Text("Quiz Complete!")
-                .font(.largeTitle.bold())
-            Text("Final Score: \(viewModel.score)")
-                .font(.title)
-
-            Button("Play Again") {
-                viewModel.restart()
-            }
-            .font(.title2.bold())
-            .foregroundColor(.white)
-            .padding()
-            .frame(width: 200)
-            .background(Color.orange)
-            .cornerRadius(12)
-        }
-    }
-}
+        ResultView(
+            mode: .quizRush,
+            score: viewModel.score,
+            highScore: viewModel.highScore,
+            onPlayAgain: { viewModel.restart() }
+        )
+    }}
 
 #Preview {
     QuizRushView()

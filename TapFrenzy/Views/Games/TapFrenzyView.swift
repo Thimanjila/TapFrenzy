@@ -103,29 +103,12 @@ struct TapFrenzyView: View {
     }
 // Game Over Screen
     private var gameOverView: some View {
-        VStack(spacing: 20) {
-            Text("Game Over").font(.largeTitle.bold())
-            Text("Final Score: \(score)").font(.title)
-            
-            if score >= highScore && score > 0 {
-                       Text(" New High Score!")
-                           .foregroundColor(.yellow)
-                           .font(.headline)
-                   } else {
-                       Text("High Score: \(highScore)")
-                           .foregroundColor(.gray)
-                   }
-
-            Button("Play Again") {
-                resetGame()
-            }
-            .font(.title2.bold())
-            .foregroundColor(.white)
-            .padding()
-            .frame(width: 200)
-            .background(Color.green)
-            .cornerRadius(12)
-        }
+        ResultView(
+            mode: .tapFrenzy,
+            score: score,
+            highScore: highScore,
+            onPlayAgain: resetGame
+        )
     }
 
     // Derived state

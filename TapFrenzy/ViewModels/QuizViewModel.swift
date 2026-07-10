@@ -5,7 +5,7 @@
 //  Created by Thimanjila Udangawe on 2026-07-09.
 //
 
-import Foundation
+import SwiftUI
 
 enum QuizState {
     case loading
@@ -23,10 +23,11 @@ class QuizViewModel: ObservableObject {
     @Published var state: QuizState = .loading
     @Published var selectedAnswer: String? = nil
     @Published var wasCorrect: Bool? = nil
+    @AppStorage("quizRushHighScore") var highScore: Int = 0
 
     private let service = TriviaService()
-        private var sessionStore: SessionStore?
-        private var locationService: LocationService?
+    private var sessionStore: SessionStore?
+    private var locationService: LocationService?
 
     func configure(sessionStore: SessionStore, locationService: LocationService) {
         self.sessionStore = sessionStore
@@ -76,6 +77,9 @@ class QuizViewModel: ObservableObject {
             currentIndex += 1
         } else {
             state = .finished
+            if score > highScore {
+                highScore = score
+            }
             sessionStore?.addSession(
                 mode: .quizRush,
                 score: score,
